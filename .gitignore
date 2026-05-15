@@ -1,0 +1,14 @@
+.DS_Store
+.vscode/
+.idea/
+*.swp
+
+node_modules/
+dist/
+coverage/
+*.log
+.env
+.env.local
+
+# Lock files: only npm by default. If you use pnpm/yarn instead, remove the relevant entry.
+# package-lock.json

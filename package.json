@@ -1,0 +1,54 @@
+{
+  "name": "jpzip",
+  "version": "1.0.0",
+  "description": "Japan postal-code dataset SDK — fetches normalized JSON from jpzip.nadai.dev",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit",
+    "lint": "tsc --noEmit"
+  },
+  "keywords": [
+    "japan",
+    "postal-code",
+    "zipcode",
+    "郵便番号",
+    "address"
+  ],
+  "author": "nadai",
+  "license": "MIT",
+  "homepage": "https://jpzip.nadai.dev",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jpzip/js.git"
+  },
+  "bugs": {
+    "url": "https://github.com/jpzip/js/issues"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "tsup": "^8.3.5",
+    "typescript": "^5.7.2",
+    "vitest": "^2.1.8"
+  }
+}
