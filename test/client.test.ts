@@ -21,8 +21,8 @@ const baseMeta: Meta = {
   total_zipcodes: 1,
   prefix_count: 1,
   by_pref: { '14': 1 },
-  data_source: 'https://www.post.japanpost.jp/zipcode/dl/kogaki-zip.html',
-  endpoints: { all: '/all.json', group: '/g/{prefix1}.json', prefix: '/p/{prefix3}.json' },
+  data_source: 'https://www.post.japanpost.jp/service/search/zipcode/download/kogaki-zip.html',
+  endpoints: { group: '/g/{prefix1}.json', prefix: '/p/{prefix3}.json' },
 };
 
 function mockFetch(routes: Record<string, unknown>): typeof fetch {
@@ -107,21 +107,22 @@ describe('JpzipClient', () => {
     expect(seen[0]).toEqual({ expected: '1.0', received: '2.0' });
   });
 
-  test('preload(all) seeds the L1 cache so lookups need no extra fetch', async () => {
+  test('preload(all) fans out to /g/0..9 and seeds L1 for subsequent lookups', async () => {
     let fetches = 0;
     const dict: ZipcodeDict = { '2310831': baseEntry };
     const f = (async (input: string | URL | Request) => {
       fetches++;
       const url = typeof input === 'string' ? input : (input as URL).toString();
-      if (url.endsWith('/all.json')) return new Response(JSON.stringify(dict), { status: 200 });
+      // Only /g/2.json has data; the other 9 return 404 — the SDK should accept that.
+      if (url.endsWith('/g/2.json')) return new Response(JSON.stringify(dict), { status: 200 });
       return new Response('not found', { status: 404 });
     }) as typeof fetch;
     const client = new JpzipClient({ fetch: f });
     await client.preload({ scope: 'all' });
-    expect(fetches).toBe(1);
+    expect(fetches).toBe(10);
     const got = await client.lookup('2310831');
     expect(got).toEqual(baseEntry);
-    expect(fetches).toBe(1);
+    expect(fetches).toBe(10);
   });
 
   test('L2 cache integration: dictionaries persist across instances', async () => {

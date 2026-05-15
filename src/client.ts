@@ -73,10 +73,18 @@ export class JpzipClient {
     return Object.assign({}, ...dicts.filter(Boolean)) as ZipcodeDict;
   }
 
-  /** Returns the full all.json (sizeable — for preload / batch use). */
+  /**
+   * Returns the full dataset. The CDN does not expose a single /all.json
+   * because the combined file exceeds Cloudflare Pages' 25 MiB per-file
+   * limit; instead we fan out across /g/0..9.json in parallel and merge.
+   */
   async lookupAll(): Promise<ZipcodeDict> {
-    const dict = await fetchDict(`${this.baseUrl}/all.json`, this.fetchOpts());
-    return dict ?? {};
+    const tasks: Promise<ZipcodeDict | null>[] = [];
+    for (let i = 0; i < 10; i++) {
+      tasks.push(this.fetchGroupDict(String(i)));
+    }
+    const dicts = await Promise.all(tasks);
+    return Object.assign({}, ...dicts.filter(Boolean)) as ZipcodeDict;
   }
 
   /** Returns parsed meta.json, or null if the CDN has none yet. */
@@ -116,9 +124,6 @@ export class JpzipClient {
         this.mem.set(this.prefixURL(p), b);
         await this.writeL2(this.prefixURL(p), b);
       }
-      // Also keep the full dict accessible via the all.json URL key.
-      this.mem.set(`${this.baseUrl}/all.json`, dict);
-      await this.writeL2(`${this.baseUrl}/all.json`, dict);
       return;
     }
     if (PREFIX_REGEX.test(opts.scope)) {

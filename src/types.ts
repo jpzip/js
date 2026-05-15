@@ -23,7 +23,6 @@ export interface ZipcodeEntry {
 }
 
 export interface Endpoints {
-  all: string;
   group: string;
   prefix: string;
 }
