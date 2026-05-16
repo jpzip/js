@@ -18,6 +18,9 @@ jobs:
           node-version: '20'
           cache: 'npm'
           registry-url: 'https://registry.npmjs.org'
+      # npm 11.5.1+ is required for Trusted Publisher OIDC auth on publish.
+      # Node 20 ships with npm 10.x, so upgrade explicitly.
+      - run: npm install -g npm@latest
       - run: npm ci
       - run: npm run build
       - run: npm publish --provenance --access public
