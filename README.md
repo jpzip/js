@@ -21,7 +21,7 @@ pnpm add jpzip
 ```ts
 import { lookup, lookupGroup, lookupAll, preload, getMeta } from 'jpzip';
 
-const entry = await lookup('2310831');
+const entry = await lookup('2310017');
 // → { prefecture: '神奈川県', city: '横浜市中区', towns: [...], ... }
 
 const dict231 = await lookupGroup('231'); // /p/231.json
@@ -50,7 +50,7 @@ const client = new JpzipClient({
 });
 
 await client.preload({ scope: 'all' }); // オフラインモード相当
-const entry = await client.lookup('2310831');
+const entry = await client.lookup('2310017');
 ```
 
 ## キャッシュ戦略 (3 層)

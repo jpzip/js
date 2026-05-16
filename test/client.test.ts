@@ -11,7 +11,7 @@ const baseEntry: ZipcodeEntry = {
   city_kana: 'ヨコハマシナカク',
   city_roma: 'Yokohama Shi Naka Ku',
   city_code: '14104',
-  towns: [{ town: '矢口台', kana: 'ヤグチダイ', roma: 'Yaguchidai' }],
+  towns: [{ town: '本町', kana: 'ホンチョウ', roma: 'Honcho' }],
 };
 
 const baseMeta: Meta = {
@@ -54,15 +54,15 @@ describe('JpzipClient', () => {
   });
 
   test('lookup returns the matched entry', async () => {
-    const dict: ZipcodeDict = { '2310831': baseEntry };
+    const dict: ZipcodeDict = { '2310017': baseEntry };
     const client = new JpzipClient({ fetch: mockFetch({ '/p/231.json': dict }) });
-    const got = await client.lookup('2310831');
+    const got = await client.lookup('2310017');
     expect(got).toEqual(baseEntry);
   });
 
   test('lookup hits the same prefix only once (L1)', async () => {
     let fetches = 0;
-    const dict: ZipcodeDict = { '2310831': baseEntry };
+    const dict: ZipcodeDict = { '2310017': baseEntry };
     const f = (async (input: string | URL | Request) => {
       fetches++;
       const url = typeof input === 'string' ? input : (input as URL).toString();
@@ -72,15 +72,15 @@ describe('JpzipClient', () => {
       return new Response('not found', { status: 404 });
     }) as typeof fetch;
     const client = new JpzipClient({ fetch: f });
-    await client.lookup('2310831');
-    await client.lookup('2310831');
+    await client.lookup('2310017');
+    await client.lookup('2310017');
     await client.lookup('2310832');
     expect(fetches).toBe(1);
   });
 
   test('lookupGroup with 2-digit prefix fans out to 10 fetches', async () => {
     let fetches = 0;
-    const dict: ZipcodeDict = { '2310831': baseEntry };
+    const dict: ZipcodeDict = { '2310017': baseEntry };
     const f = (async (input: string | URL | Request) => {
       fetches++;
       const url = typeof input === 'string' ? input : (input as URL).toString();
@@ -92,7 +92,7 @@ describe('JpzipClient', () => {
     const client = new JpzipClient({ fetch: f });
     const out = await client.lookupGroup('23');
     expect(fetches).toBe(10);
-    expect(out['2310831']).toEqual(baseEntry);
+    expect(out['2310017']).toEqual(baseEntry);
   });
 
   test('getMeta caches and surfaces spec mismatches', async () => {
@@ -109,7 +109,7 @@ describe('JpzipClient', () => {
 
   test('preload(all) fans out to /g/0..9 and seeds L1 for subsequent lookups', async () => {
     let fetches = 0;
-    const dict: ZipcodeDict = { '2310831': baseEntry };
+    const dict: ZipcodeDict = { '2310017': baseEntry };
     const f = (async (input: string | URL | Request) => {
       fetches++;
       const url = typeof input === 'string' ? input : (input as URL).toString();
@@ -120,7 +120,7 @@ describe('JpzipClient', () => {
     const client = new JpzipClient({ fetch: f });
     await client.preload({ scope: 'all' });
     expect(fetches).toBe(10);
-    const got = await client.lookup('2310831');
+    const got = await client.lookup('2310017');
     expect(got).toEqual(baseEntry);
     expect(fetches).toBe(10);
   });
@@ -142,7 +142,7 @@ describe('JpzipClient', () => {
       },
     };
 
-    const dict: ZipcodeDict = { '2310831': baseEntry };
+    const dict: ZipcodeDict = { '2310017': baseEntry };
     let fetches = 0;
     const f = (async (input: string | URL | Request) => {
       fetches++;
@@ -154,12 +154,12 @@ describe('JpzipClient', () => {
     }) as typeof fetch;
 
     const c1 = new JpzipClient({ fetch: f, cache });
-    await c1.lookup('2310831');
+    await c1.lookup('2310017');
     expect(fetches).toBe(1);
 
     // New instance — L1 is empty but L2 is shared.
     const c2 = new JpzipClient({ fetch: f, cache });
-    const got = await c2.lookup('2310831');
+    const got = await c2.lookup('2310017');
     expect(got).toEqual(baseEntry);
     expect(fetches).toBe(1);
   });
