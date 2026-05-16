@@ -1,5 +1,5 @@
 {
-  "name": "jpzip",
+  "name": "@jpzip/jpzip",
   "version": "0.1.0",
   "description": "Japan postal-code dataset SDK — fetches normalized JSON from jpzip.nadai.dev",
   "type": "module",
@@ -37,7 +37,7 @@
   "homepage": "https://jpzip.nadai.dev",
   "repository": {
     "type": "git",
-    "url": "https://github.com/jpzip/js.git"
+    "url": "git+https://github.com/jpzip/js.git"
   },
   "bugs": {
     "url": "https://github.com/jpzip/js/issues"

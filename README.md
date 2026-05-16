@@ -9,9 +9,9 @@
 ## インストール
 
 ```sh
-npm install jpzip
+npm install @jpzip/jpzip
 # or
-pnpm add jpzip
+pnpm add @jpzip/jpzip
 ```
 
 ## 使い方
@@ -19,7 +19,7 @@ pnpm add jpzip
 ### 関数 API
 
 ```ts
-import { lookup, lookupGroup, lookupAll, preload, getMeta } from 'jpzip';
+import { lookup, lookupGroup, lookupAll, preload, getMeta } from '@jpzip/jpzip';
 
 const entry = await lookup('2310017');
 // → { prefecture: '神奈川県', city: '横浜市中区', towns: [...], ... }
@@ -35,7 +35,7 @@ const meta = await getMeta();
 ### クラス API (L2 キャッシュ・複数インスタンス用)
 
 ```ts
-import { JpzipClient } from 'jpzip';
+import { JpzipClient } from '@jpzip/jpzip';
 
 const client = new JpzipClient({
   baseUrl: 'https://jpzip.nadai.dev',
