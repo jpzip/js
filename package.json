@@ -1,6 +1,6 @@
 {
   "name": "@jpzip/jpzip",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Japan postal-code dataset SDK — fetches normalized JSON from jpzip.nadai.dev",
   "type": "module",
   "main": "./dist/index.cjs",

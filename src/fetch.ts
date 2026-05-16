@@ -27,28 +27,33 @@ export async function fetchJSON<T>(url: string, opts: FetchOptions = {}): Promis
     if (attempt > 0) {
       await sleep(BASE_DELAY_MS * 2 ** attempt);
     }
-    try {
-      const init: RequestInit = {
-        method: 'GET',
-        headers: { Accept: 'application/json' },
-      };
-      if (opts.signal !== undefined) init.signal = opts.signal;
-      if (opts.noCache) init.cache = 'no-cache';
+    const init: RequestInit = {
+      method: 'GET',
+      headers: { Accept: 'application/json' },
+    };
+    if (opts.signal !== undefined) init.signal = opts.signal;
+    if (opts.noCache) init.cache = 'no-cache';
 
-      const res = await f(url, init);
-      if (res.status === 404) return null;
-      if (res.status >= 500) {
-        lastErr = new Error(`jpzip: ${url} returned ${res.status}`);
-        continue;
-      }
-      if (!res.ok) {
-        throw new Error(`jpzip: ${url} returned ${res.status}`);
-      }
-      return (await res.json()) as T;
+    let res: Response;
+    try {
+      res = await f(url, init);
     } catch (err) {
-      lastErr = err;
+      // Network-layer failures (DNS, TLS, fetch abort, etc.) — retry,
+      // unless the caller aborted us, which should propagate immediately.
       if (err instanceof DOMException && err.name === 'AbortError') throw err;
+      lastErr = err;
+      continue;
     }
+    if (res.status === 404) return null;
+    if (res.status >= 500) {
+      lastErr = new Error(`jpzip: ${url} returned ${res.status}`);
+      continue;
+    }
+    // Other 4xx are not retried — the request itself is wrong.
+    if (!res.ok) {
+      throw new Error(`jpzip: ${url} returned ${res.status}`);
+    }
+    return (await res.json()) as T;
   }
   throw lastErr instanceof Error
     ? lastErr
