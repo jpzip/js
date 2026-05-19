@@ -2,6 +2,7 @@
 
 [![npm version](https://img.shields.io/npm/v/@jpzip/jpzip.svg)](https://www.npmjs.com/package/@jpzip/jpzip)
 [![types: included](https://img.shields.io/npm/types/@jpzip/jpzip.svg)](https://www.npmjs.com/package/@jpzip/jpzip)
+[![Docs](https://img.shields.io/badge/docs-jpzip.nadai.dev-0066cc.svg)](https://jpzip.nadai.dev)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Test](https://github.com/jpzip/js/actions/workflows/test.yml/badge.svg)](https://github.com/jpzip/js/actions/workflows/test.yml)
 
